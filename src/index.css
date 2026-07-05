@@ -1,0 +1,595 @@
+/* =====================================================================
+   THE MATRIX (1999) — TERMINAL / CYBERPUNK THEME
+   Fonts: JetBrains Mono (primary), IBM Plex Mono, Fira Code (fallbacks)
+   ===================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Fira+Code:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "JetBrains Mono", "IBM Plex Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg: var(--bg);
+  --color-bg-panel: var(--bg-panel);
+  --color-bg-panel-alt: var(--bg-panel-alt);
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-dim: var(--text-dim);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-violet: var(--accent-violet);
+  --color-accent-green: var(--accent-green);
+  --color-accent-red: var(--accent-red);
+}
+
+/* -----------------------------------------------------------------
+   COLOR SYSTEM
+   Every existing component references these SAME variable names
+   (--accent-cyan, --bg-panel, etc.) — repointing the values here
+   recolors the entire app to the Matrix palette without touching
+   any component markup or content.
+   ----------------------------------------------------------------- */
+:root {
+  --bg: #000000;
+  --bg-panel: rgba(4, 10, 6, 0.88);
+  --bg-panel-alt: rgba(6, 16, 9, 0.92);
+  --border: #0f3d1e;
+  --border-soft: #0a2614;
+  --text-primary: #d7ffd9;
+  --text-secondary: #7fdb8f;
+  --text-dim: #3f8850;
+  /* "cyan" slot now carries the primary Matrix neon green */
+  --accent-cyan: #00ff41;
+  --accent-pink: #ff2b6d;
+  --accent-amber: #f4d160;
+  --accent-violet: #39ff88;
+  --accent-green: #00ff41;
+  --accent-red: #ff3b3b;
+  --radius: 4px;
+  --maxw: 1080px;
+
+  --matrix-glow: 0 0 6px rgba(0, 255, 65, 0.55), 0 0 18px rgba(0, 255, 65, 0.25);
+}
+
+/* "Light theme" becomes a bright phosphor / amber-on-paper terminal variant
+   rather than breaking the hacker aesthetic with a literal white UI. */
+:root[data-theme="light"] {
+  --bg: #f4fbf4;
+  --bg-panel: rgba(255, 255, 255, 0.92);
+  --bg-panel-alt: rgba(235, 250, 236, 0.95);
+  --border: #b6e3bd;
+  --border-soft: #d3efd7;
+  --text-primary: #06210c;
+  --text-secondary: #1f6b31;
+  --text-dim: #4c8a5b;
+  --accent-cyan: #067a2e;
+  --accent-pink: #b3204f;
+  --accent-amber: #96731a;
+  --accent-violet: #0e8f4a;
+  --accent-green: #067a2e;
+  --accent-red: #a51f1f;
+  --matrix-glow: 0 0 4px rgba(6, 122, 46, 0.25);
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Faint terminal grid, masked toward the top like a CRT vignette */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+  background-size: 42px 42px;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+}
+
+::selection {
+  background: var(--accent-cyan);
+  color: #001a06;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.4);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+}
+
+/* Custom Floating Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.floating-window {
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-window:hover {
+  animation-play-state: paused;
+}
+
+/* Micro animations */
+.transition-all-300 {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-scale {
+  animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ===================== CUSTOM CURSOR (NEON MATRIX DOT) ===================== */
+body.custom-cursor-active,
+body.custom-cursor-active a,
+body.custom-cursor-active button {
+  cursor: none;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  border-radius: 50%;
+  transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.85), 0 0 16px rgba(0, 255, 65, 0.4);
+}
+
+.cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--accent-cyan);
+  opacity: 0.6;
+}
+
+.cursor-ring--active {
+  width: 52px;
+  height: 52px;
+  background: rgba(0, 255, 65, 0.08);
+  border-color: var(--accent-cyan);
+  opacity: 0.9;
+}
+
+.cursor-ring--click {
+  width: 24px;
+  height: 24px;
+}
+
+/* Digital ripple spawned on click by CustomCursor.tsx */
+.cursor-ripple {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9997;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-cyan);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: cursorRipple 0.6s ease-out forwards;
+}
+@keyframes cursorRipple {
+  0% { width: 10px; height: 10px; opacity: 0.9; }
+  100% { width: 70px; height: 70px; opacity: 0; }
+}
+
+/* ===================== SPOTLIGHT / FLASHLIGHT PANELS ===================== */
+.win {
+  position: relative;
+  isolation: isolate;
+}
+.win::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: var(--spot-opacity, 0);
+  background: radial-gradient(
+    circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(0, 255, 65, 0.09),
+    transparent 55%
+  );
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+/* ===================== KONAMI / MATRIX-HAS-YOU EASTER EGG ===================== */
+@keyframes konamiPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.03); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.konami-pop {
+  animation: konamiPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.konami-rain {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+.konami-rain span {
+  position: absolute;
+  top: -40px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--accent-cyan);
+  opacity: 0.5;
+  animation-name: konamiFall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes konamiFall {
+  from { transform: translateY(-10vh); }
+  to { transform: translateY(110vh); }
+}
+
+/* =====================================================================
+   MATRIX DIGITAL RAIN CANVAS LAYER
+   ===================================================================== */
+#matrix-rain-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+/* =====================================================================
+   CRT / SCANLINE / FLICKER OVERLAY
+   ===================================================================== */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+  mix-blend-mode: normal;
+}
+
+.crt-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 1px,
+    rgba(0, 255, 65, 0.025) 2px,
+    rgba(0, 0, 0, 0.06) 3px
+  );
+  background-size: 100% 4px;
+  animation: scanlineDrift 9s linear infinite;
+  opacity: 0.55;
+}
+@keyframes scanlineDrift {
+  from { background-position: 0 0; }
+  to { background-position: 0 100px; }
+}
+
+.crt-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.crt-flicker {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 255, 65, 0.02);
+  animation: crtFlicker 6.2s infinite;
+}
+@keyframes crtFlicker {
+  0%, 96%, 100% { opacity: 0; }
+  97% { opacity: 0.35; }
+  98% { opacity: 0.05; }
+  99% { opacity: 0.25; }
+}
+
+/* Heavier flicker burst, toggled briefly via .crt-flicker--burst */
+.crt-flicker--burst {
+  animation: crtFlickerBurst 0.4s steps(2, jump-none) 3;
+}
+@keyframes crtFlickerBurst {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.05; }
+  100% { opacity: 0.5; }
+}
+
+/* ===================== GLITCH TEXT ===================== */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-glitch);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  overflow: hidden;
+}
+.glitch-text:hover::before,
+.glitch-text:hover::after,
+.glitch-text.glitch-active::before,
+.glitch-text.glitch-active::after {
+  opacity: 0.85;
+}
+.glitch-text:hover::before,
+.glitch-text.glitch-active::before {
+  color: var(--accent-pink);
+  clip-path: polygon(0 2%, 100% 2%, 100% 40%, 0 40%);
+  transform: translate(-2px, -1px);
+  animation: glitchShift 0.5s infinite linear alternate-reverse;
+}
+.glitch-text:hover::after,
+.glitch-text.glitch-active::after {
+  color: var(--accent-violet);
+  clip-path: polygon(0 60%, 100% 60%, 100% 98%, 0 98%);
+  transform: translate(2px, 1px);
+  animation: glitchShift 0.4s infinite linear alternate-reverse;
+}
+@keyframes glitchShift {
+  0% { transform: translate(-2px, -1px); }
+  50% { transform: translate(2px, 1px); }
+  100% { transform: translate(-1px, 2px); }
+}
+
+/* Hover distortion for interactive elements: quick RGB-split flicker */
+.hover-distort {
+  transition: text-shadow 0.15s ease, transform 0.15s ease;
+}
+.hover-distort:hover {
+  text-shadow: 1px 0 var(--accent-pink), -1px 0 var(--accent-violet);
+}
+
+/* Neon glow utility */
+.neon-glow {
+  text-shadow: var(--matrix-glow);
+}
+.neon-border-glow {
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.18), inset 0 0 20px rgba(0, 255, 65, 0.04);
+}
+
+/* Terminal-style corner brackets used on project/system panels */
+.corner-brackets {
+  position: relative;
+}
+.corner-brackets::before,
+.corner-brackets::after,
+.corner-brackets > .cb-tr,
+.corner-brackets > .cb-bl {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--accent-cyan);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.corner-brackets::before {
+  top: 6px; left: 6px;
+  border-top: 2px solid; border-left: 2px solid;
+}
+.corner-brackets::after {
+  bottom: 6px; right: 6px;
+  border-bottom: 2px solid; border-right: 2px solid;
+}
+
+/* Digital noise texture, applied sparingly */
+.digital-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Blinking terminal cursor block */
+.blink-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  background: var(--accent-cyan);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blinkCursor 1s steps(1) infinite;
+  box-shadow: 0 0 6px rgba(0, 255, 65, 0.7);
+}
+@keyframes blinkCursor {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/* Floating scroll-to-top Matrix glyph */
+.matrix-scrolltop {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 60;
+  width: 46px;
+  height: 46px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 12, 4, 0.85);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.3s ease;
+}
+.matrix-scrolltop:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.65);
+}
+.matrix-scrolltop:active {
+  animation: scrolltopPulse 0.5s ease;
+}
+@keyframes scrolltopPulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7); }
+  100% { box-shadow: 0 0 0 18px rgba(0, 255, 65, 0); }
+}
+
+/* Hidden red/blue pill toggles — deliberately subtle, bottom-left corner */
+.pill-easter-egg {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 55;
+  display: flex;
+  gap: 6px;
+  opacity: 0.14;
+  transition: opacity 0.3s ease;
+}
+.pill-easter-egg:hover {
+  opacity: 0.85;
+}
+.pill-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.pill-dot--red {
+  background: var(--accent-red);
+  box-shadow: 0 0 6px rgba(255, 59, 59, 0.7);
+}
+.pill-dot--blue {
+  background: #3b82f6;
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.7);
+}
+
+/* Hidden binary message — visually near-invisible, present in the DOM */
+.hidden-binary-message {
+  position: absolute;
+  font-size: 6px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  color: var(--accent-cyan);
+  opacity: 0.05;
+  user-select: text;
+  pointer-events: none;
+}
+
+/* Toast used by MatrixEasterEggs (Neo message, Knock knock, There is no spoon, etc.) */
+.matrix-toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 210;
+  background: rgba(0, 10, 4, 0.92);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: 4px;
+  box-shadow: 0 0 18px rgba(0, 255, 65, 0.35);
+  animation: toastInOut 3.6s ease forwards;
+  text-align: center;
+  white-space: pre-line;
+}
+@keyframes toastInOut {
+  0% { opacity: 0; transform: translate(-50%, 12px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  85% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -8px); }
+}
+
+/* Hidden terminal (backtick key) overlay */
+.hidden-terminal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+}
+.hidden-terminal-box {
+  width: min(560px, 92vw);
+  background: rgba(0, 8, 3, 0.96);
+  border: 1px solid var(--accent-cyan);
+  border-radius: 6px;
+  box-shadow: 0 0 30px rgba(0, 255, 65, 0.35);
+  font-family: var(--font-mono);
+  overflow: hidden;
+}
+
+/* ===================== ACCESSIBILITY: REDUCED MOTION ===================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .crt-scanlines, .crt-flicker, #matrix-rain-canvas {
+    display: none !important;
+  }
+}

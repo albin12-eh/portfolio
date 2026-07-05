@@ -1,0 +1,6 @@
+{
+  "name": "Albin Johnson Portfolio",
+  "description": "Interactive developer portfolio for Albin Johnson, full-stack developer, featuring terminal style commands, skills breakdown, project showcase, and professional timeline.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

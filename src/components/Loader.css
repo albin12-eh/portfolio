@@ -1,0 +1,59 @@
+/* Full-screen loading overlay wrapper */
+.app-loader-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  opacity: 1;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  visibility: visible;
+}
+
+.app-loader-screen--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.app-loader-terminal {
+  width: min(480px, 88vw);
+  font-family: "JetBrains Mono", "IBM Plex Mono", "Fira Code", ui-monospace, monospace;
+  font-size: 13px;
+  color: #00ff41;
+  text-shadow: 0 0 6px rgba(0, 255, 65, 0.6);
+}
+
+.app-loader-line {
+  margin: 0 0 8px 0;
+  opacity: 0;
+  animation: loaderLineIn 0.25s ease forwards;
+}
+
+@keyframes loaderLineIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.app-loader-prompt {
+  color: #3f8850;
+  margin-right: 4px;
+}
+
+.app-loader-bar {
+  letter-spacing: 1px;
+  white-space: pre;
+}
+
+.app-loader-connected {
+  color: #7fdb8f;
+  margin-top: 14px;
+}
+
+.app-loader-welcome {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+}
