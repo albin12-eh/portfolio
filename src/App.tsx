@@ -734,7 +734,7 @@ useEffect(() => {
 
                     <div className="space-y-4">
                       {cat.items.map((skill, sIdx) => {
-                        const STATUS_WORDS = ["LOADED", "VERIFIED", "ONLINE", "ACTIVE", "CONNECTED"];
+                        const STATUS_WORDS = ["LOADED", "LOADED", "LOADED", "LOADED", "LOADED"];
                         const statusWord = STATUS_WORDS[(idx * 3 + sIdx) % STATUS_WORDS.length];
                         return (
                           <div key={sIdx} className="space-y-2">
