@@ -527,12 +527,8 @@ useEffect(() => {
                     </MagneticButton>
                     <MagneticButton>
                       <a
-                        href="/Albin_Johnson_Resume.pdf"
+                        href={`${import.meta.env.BASE_URL}media/albinresume.pdf`}
                         download
-                        onClick={(e) => {
-                          e.preventDefault();
-                          alert("Simulated PDF Resume download for Albin Johnson. (Ensure PDF asset exists in static builds)");
-                        }}
                         className="btn border border-border text-text-primary font-mono text-xs font-bold px-5 py-3 rounded-lg flex items-center gap-2 hover:border-accent-cyan hover:text-accent-cyan hover:translate-y-[-2px] transition-all"
                       >
                         <Download className="w-3.5 h-3.5" /> [DOWNLOAD_RESUME]
